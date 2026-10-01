@@ -1,0 +1,4 @@
+faster-whisper==1.2.1
+av>=11
+pillow>=10
+numpy>=1.24

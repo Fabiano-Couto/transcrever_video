@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+
+# videos e saidas de teste nunca vao para o repositorio
+*.ts
+*.mp4
+*.mkv
+*.webm
+*.mov
+*.avi
+*.jpg
+*.png
+00-*
+!docs/*.png

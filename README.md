@@ -163,6 +163,14 @@ Ignorado de 00:01:10 a 00:17:39: [[912, 0, 1280, 688]]
 | `--refazer` | desligado | Não reaproveita a transcrição da rodada anterior |
 | `--quadro HH:MM:SS ...` | - | Só extrai o quadro exato desses instantes, em PNG |
 
+### Texto pequeno: recortar e ampliar a tela compartilhada
+
+```bash
+venv/Scripts/python.exe ampliar_quadro.py "pasta/reuniao_000915_exato.png" --escala 2
+```
+
+Recorta só a área da tela compartilhada (detectada sozinha: a maior faixa clara a partir da esquerda, já que o fundo da chamada é escuro) e amplia, gravando `<quadro>_zoom.png` ao lado. Use no PNG exato do `--quadro`. Se a detecção errar, passe `--area X0 Y0 X1 Y1` em pixels do quadro original; para ler um trecho só, `--area` menor e `--escala 3`.
+
 ## 🧠 Como a detecção de mudança funciona
 
 1. **Primeira leitura do vídeo.** A cada segundo, a imagem é reduzida para 640 px de largura em tons de cinza e comparada com a anterior. A skill conta, ponto a ponto, com que frequência cada região muda. O que muda em mais de 10% dos instantes é ruído: participante da chamada, borda de quem fala, avatar animado. O grupo inteiro vira um retângulo ignorado.
@@ -174,7 +182,7 @@ Na prática, numa reunião de 17min38s em 720p com Excel e sistema compartilhado
 
 ## ⚠️ Limitações conhecidas
 
-- **Resolução do vídeo.** Gravação em 720p deixa texto pequeno difícil de ler. O `--quadro` em PNG ajuda (sem compressão), mas não cria detalhe que o vídeo não tem.
+- **Resolução do vídeo.** Gravação em 720p deixa texto pequeno difícil de ler. O `--quadro` em PNG (sem compressão) e o `ampliar_quadro.py` (recorte da tela compartilhada ampliado) resolvem a maior parte dos casos, mas não criam detalhe que o vídeo não tem.
 - **O Whisper não separa quem fala.** Se quem falou importa, exporte a transcrição da ferramenta de reunião (tl;dv, Teams, Zoom) e deixe ao lado do vídeo com o nome começando igual.
 - **Falso positivo é esperado, de propósito.** Prefere-se quadro sobrando a perder o momento em que alguém apontou algo. O agente só abre o que a fala pede.
 - **Velocidade do Whisper em CPU:** de metade ao tempo total do vídeo. Os quadros são rápidos.
@@ -185,6 +193,7 @@ Na prática, numa reunião de 17min38s em 720p com Excel e sistema compartilhado
 transcrever-video/
 ├── SKILL.md               # o que o Claude Code lê: quando disparar e como usar o resultado
 ├── transcrever_video.py   # linha de comando
+├── ampliar_quadro.py      # recorta a tela compartilhada de um quadro e amplia (texto pequeno)
 ├── nucleo/                # o motor, sem dependência de terminal nem do Claude
 │   ├── quadros.py         #   leitura do vídeo, regiões ignoradas, detecção de mudança
 │   ├── transcricao.py     #   leitor de tl;dv / faixas de tempo e o Whisper

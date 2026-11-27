@@ -65,9 +65,37 @@ valor". Nesses pontos:
 1. abra a `tela vigente` da fala para saber o contexto;
 2. abra os quadros de **mouse/detalhe** daquele trecho e procure o ponteiro na regiao
    indicada (x/y em pixels do video);
-3. se o momento exato caiu entre dois quadros, extraia com `--quadro HH:MM:SS`.
+3. se o momento exato caiu entre dois quadros, extraia com `--quadro HH:MM:SS`;
+4. se o texto da tela compartilhada estiver pequeno demais (planilha, ERP, codigo),
+   **recorte e amplie** (secao 4.1) antes de concluir que nao da para ler.
 
 Quadro sobrando nao e problema; quadro faltando e. Por isso o limiar e baixo.
+
+### 4.1 Texto pequeno: recortar a tela compartilhada e ampliar
+
+Em reuniao gravada em 720p, a tela compartilhada ocupa so uma parte do quadro (os
+participantes ficam ao lado) e celula de planilha, campo de tela de sistema e arvore
+de cadastro ficam ilegiveis no quadro inteiro. Recortar so a area compartilhada e
+ampliar 2 a 3 vezes resolve na maioria dos casos:
+
+```bash
+"<pasta-da-skill>/venv/Scripts/python.exe" "<pasta-da-skill>/ampliar_quadro.py" "<quadro_exato.png>" [mais quadros] [--escala 3] [--area X0 Y0 X1 Y1] [--saida <pasta>]
+```
+
+- Amplie o **PNG exato** (`--quadro`), nao o JPG do roteiro, que ja perdeu detalhe.
+- Sem `--area`, o script acha sozinho a area compartilhada (a maior faixa clara a
+  partir da esquerda; o fundo da chamada e escuro) e imprime a area usada. Confira no
+  primeiro quadro; se errar, passe `--area` em pixels do quadro original (o mesmo
+  sistema do roteiro). Para ler so um trecho (uma coluna, um campo), passe `--area`
+  menor e `--escala 3`.
+- A saida e `<quadro>_zoom.png` ao lado do quadro. Quadro ampliado que serviu de prova
+  de requisito pode ficar na pasta do video, com nome que diga o que mostra.
+- Mesmo ampliado, se nao der para ler, diga que nao conseguiu em vez de adivinhar.
+
+Medido numa reuniao tl;dv em 720p: a arvore de naturezas, as celulas de uma planilha
+Excel e os campos de uma nota no ERP, ilegiveis no quadro inteiro, ficaram legiveis com
+o recorte ampliado 2x; a deteccao automatica acertou a area em 7 de 7 quadros, em dois
+layouts diferentes da chamada.
 
 ## 5. Antes de agir
 
@@ -81,8 +109,8 @@ Quadro sobrando nao e problema; quadro faltando e. Por isso o limiar e baixo.
 ## Armadilhas
 
 - **Video em 720p** tem texto pequeno. Se nao der para ler, extraia o instante em PNG
-  com `--quadro` (sem perda de compressao) e, se ainda assim nao der, diga que nao
-  conseguiu ler em vez de adivinhar.
+  com `--quadro` (sem perda de compressao), recorte e amplie com o `ampliar_quadro.py`
+  (secao 4.1) e, se ainda assim nao der, diga que nao conseguiu ler em vez de adivinhar.
 - O Whisper **nao separa quem fala**. Quando quem falou importa, peca ao usuario a
   transcricao do tl;dv (ou da ferramenta de reuniao) e coloque ao lado do video.
 - A comparacao ignora as regioes que mudam o tempo todo (quadradinho dos participantes,
